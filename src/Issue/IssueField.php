@@ -444,18 +444,16 @@ class IssueField implements \JsonSerializable
         return $this;
     }
 
-    /**
-     * @param \JiraCloud\ADF\AtlassianDocumentFormat|null $description
-     *
-     * @return $this
-     */
     public function addDescriptionParagraph(string $text, ADFMarkType $markType): static
     {
-        if (empty($this->description)) {
-            $this->description = new AtlassianDocumentFormat();
-        }
+        $descriptionDocument = new Document();
+        $descriptionDocument->paragraph()->text($text);
 
-        $this->description->addParagraph('paragraph', $markType);
+        if (empty($this->description) || !($this->description instanceof AtlassianDocumentFormat)) {
+            $this->description = new AtlassianDocumentFormat($descriptionDocument);
+        } else {
+            $this->description->setDocument($descriptionDocument);
+        }
 
         return $this;
     }
